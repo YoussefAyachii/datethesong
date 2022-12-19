@@ -86,11 +86,11 @@ class TestLoadData(unittest.TestCase):
             x=Xl[-1, :2], y=Xl_last_row_first2c, decimal=6,
             err_msg="Wrong values in Xl (last row, first 2 columns).")
         np.testing.assert_array_almost_equal(
-            x=Xl[0, -2:], y=Xl_first_row_lastc,
-            err_msg="Wrong values in Xl (first row, last 2 columns).")
+            x=Xl[0, -1], y=Xl_first_row_lastc,
+            err_msg="Wrong values in Xl (first row, last column).")
         np.testing.assert_array_almost_equal(
-            x=Xl[-1, -2:], y=Xl_last_row_lastc,
-            err_msg="Wrong values in Xl (last row, last 2 columns).")
+            x=Xl[-1, -1], y=Xl_last_row_lastc,
+            err_msg="Wrong values in Xl (last row, last column).")
 
         np.testing.assert_array_almost_equal(
             x=Xu[0, :2], y=Xu_first_row_first2c, decimal=6,
@@ -99,11 +99,11 @@ class TestLoadData(unittest.TestCase):
             x=Xu[-1, :2], y=Xu_last_row_first2c, decimal=6,
             err_msg="Wrong values in Xu (last row, first 2 columns).")
         np.testing.assert_array_almost_equal(
-            x=Xu[0, -2:], y=Xu_first_row_lastc,
-            err_msg="Wrong values in Xu (first row, last 2 columns)")
+            x=Xu[0, -1], y=Xu_first_row_lastc,
+            err_msg="Wrong values in Xu (first row, last column)")
         np.testing.assert_array_almost_equal(
-            x=Xu[-1, -2:], y=Xu_last_row_lastc,
-            err_msg="Wrong values in Xu (last row, last 2 columns)")
+            x=Xu[-1, -1], y=Xu_last_row_lastc,
+            err_msg="Wrong values in Xu (last row, last column)")
 
 
 class TestRandomizeData(unittest.TestCase):

@@ -31,8 +31,7 @@ def load_data(filename):
 
 def randomize_data(X, y):
     """
-    Randomly permute the examples in the labeled set (X, y), i.e. the rows
-    of X and the elements of y, simultaneously.
+    Randomly shuffle the rows, i.e. observations, in the labeled set (X, y).
 
     Parameters
     ----------
@@ -44,9 +43,9 @@ def randomize_data(X, y):
     Returns
     -------
     Xr : np.ndarray [n, d]
-        Permuted version of X
+        Shuffled version of X
     yr : np.ndarray [n]
-        Permuted version of y
+        Shuffled version of y
 
     Raises
     ------

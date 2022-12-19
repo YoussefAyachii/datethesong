@@ -95,13 +95,11 @@ class LinearRegressionLeastSquares(LinearRegression):
         LinearRegression.fit(self, X, y)
 
         # TODO À compléter
-        n = X.shape[0]
-        X1 = np.concatenate((X, np.ones(n)[:, np.newaxis]), axis=1)
-        X1t_X1_t_X1t = np.linalg.pinv(X1)
-        X1t_X1_t_X1t_y = np.multiply(X1t_X1_t_X1t, y)
-        w, b = X1t_X1_t_X1t_y[:-1], X1t_X1_t_X1t_y[-1]
-        return w, b
-
+        N, M = X.shape
+        X1 = np.concatenate((X, np.ones(N)[:, np.newaxis]), axis=1)
+        X1_pinv = np.linalg.pinv(X1)
+        X1_pinv_y = X1_pinv @ y
+        self.w, self.b = X1_pinv_y[:-1], X1_pinv_y[-1]
 
 class LinearRegressionMean(LinearRegression):
     """
@@ -135,7 +133,6 @@ class LinearRegressionMean(LinearRegression):
         N, M = X.shape
         self.w = np.zeros(M)
         self.b = np.sum(y) / N
-        return w, b
 
 
 
@@ -169,9 +166,8 @@ class LinearRegressionMedian(LinearRegression):
 
         # TODO À compléter
         N, M = X.shape
-        w = np.zeros(M)
-        b = np.median(y)
-        return w, b
+        self.w = np.zeros(M)
+        self.b = np.median(y)
 
 
 class LinearRegressionMajority(LinearRegression):
@@ -205,9 +201,8 @@ class LinearRegressionMajority(LinearRegression):
 
         # TODO À compléter
         N, M = X.shape
-        w = np.zeros(M)
-        b = bins[np.where(h == np.max(h))] 
-        return w, b
+        self.w = np.zeros(M)
+        self.b = bins[np.where(h == np.max(h))][0] # renvoi plusieurs valeurs: doit renvoyer une seule.
 
 
 class LinearRegressionRidge(LinearRegression):

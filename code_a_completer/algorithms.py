@@ -28,6 +28,21 @@ def normalize_dictionary(X):
     assert X.ndim == 2
 
     # TODO À compléter
+    # to vectorize: nympy multiplicatio not loop !!
+    X_tild = np.zeros((X.shape))
+    norm_coefs = np.zeros(X.shape[1])
+    for i in range(X.shape[1]):
+        a_m = X[:, i]
+        a_m_l2 = np.linalg.norm(a_m)
+        a_m_tild = a_m / a_m_l2
+        
+        X_tild[:, i] = a_m_tild
+        norm_coefs[i] = a_m_l2
+        # norme euclidienne des a_m de X_tild doit etre unitaire ???
+    return X_tild, norm_coefs
+    
+    
+        
 
 
 def ridge_regression(X, y, lambda_ridge):
@@ -61,7 +76,10 @@ def ridge_regression(X, y, lambda_ridge):
     assert y.size == n_samples
 
     # TODO À compléter
-
+    Xt_X = X.T @ X
+    lambda_id = lambda_ridge * np.eye(n_features)
+    w = (Xt_X + lambda_id) @ X.T @ y
+    return w
 
 def mp(X, y, n_iter):
     """
@@ -93,7 +111,19 @@ def mp(X, y, n_iter):
     assert y.size == n_samples
 
     # TODO À compléter
-
+    # initialization
+    r = y
+    w = np.zeros(n_features)
+    for i,k in enumerate(__):
+        a_m = X[:, i]
+        c_m = a_m @ r
+        i, j = np.unravel_index(c_m.argmax(), c_m.shape) # ??
+        m_hat = c_m[i, j]
+        # update w and r
+        w[m_hat] = w[m_hat] + c_m
+        r = r - (c_m * a_m)
+        
+    return w, error_norm # error_norm : vecteur de taille n_iter+1
 
 def omp(X, y, n_iter):
     """

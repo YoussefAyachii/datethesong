@@ -20,5 +20,5 @@ ax = plt.axes()
 plt.hist(y_labeled,
          bins=np.arange(int(min(y_labeled)), int(max(y_labeled)), 1))
 plt.style.context("seaborn")
-plt.title("histogram of the number of songs per year in y_labeled")
-plt.savefig("figures/hist_ylabeled.png")
+plt.title("histogram of the number of songs per year")
+plt.savefig("figures/hist_year.png")
