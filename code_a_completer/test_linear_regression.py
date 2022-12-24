@@ -138,7 +138,7 @@ class TestLinearRegressionMajority(unittest.TestCase):
             linear_reg.w, 0,
             err_msg='Weight vector is not correctly estimated')
 
-"""
+
 class TestLinearRegressionRidge(unittest.TestCase):
     def test_fit_identity(self):
         # Choose dimensions
@@ -429,7 +429,7 @@ class TestLinearRegressionOmp(unittest.TestCase):
         np.testing.assert_array_equal(w_est.shape, w_ref.shape)
         # check b
         np.testing.assert_almost_equal(b_est, b_ref)
-"""
+
 
 if __name__ == '__main__':
     unittest.main()

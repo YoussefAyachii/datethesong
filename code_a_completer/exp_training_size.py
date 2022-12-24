@@ -4,7 +4,6 @@ for datasets of different size"""
 import numpy as np
 from time import time
 from data_utils import load_data, split_data
-from linear_regression import LinearRegressionMajority, LinearRegressionMedian, LinearRegressionMean, LinearRegressionLeastSquares
 
 # Part 1: Choisisser une strategie d'estimation constante: regle majoritaire
 

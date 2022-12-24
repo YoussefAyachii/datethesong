@@ -28,22 +28,21 @@ def normalize_dictionary(X):
     assert X.ndim == 2
 
     # TODO À compléter
-    # to vectorize: nympy multiplicatio not loop !!
-    X_tild = np.zeros((X.shape))
-    norm_coefs = np.zeros(X.shape[1])
-    for i in range(X.shape[1]):
-        a_m = X[:, i]
-        a_m_l2 = np.linalg.norm(a_m)
-        a_m_tild = a_m / a_m_l2
-        
-        X_tild[:, i] = a_m_tild
-        norm_coefs[i] = a_m_l2
-        # norme euclidienne des a_m de X_tild doit etre unitaire ???
+    rows, cols = X.shape
+    X_tild = np.zeros(X.shape)
+    norm_coefs = np.zeros(cols)
+    """
+    for col in range(cols):
+        length = np.sqrt(np.sum(X[row][col]**2 for row in range(rows)))
+        norm_coefs[col] = length
+        for row in range(rows):
+            X_tild[row][col] = X[row][col] / length
+    """
+    norm_coefs = np.sqrt(np.sum(np.square(X), axis=0))
+    X_tild = np.divide(X, norm_coefs)
+    
     return X_tild, norm_coefs
     
-    
-        
-
 
 def ridge_regression(X, y, lambda_ridge):
     """
@@ -78,7 +77,7 @@ def ridge_regression(X, y, lambda_ridge):
     # TODO À compléter
     Xt_X = X.T @ X
     lambda_id = lambda_ridge * np.eye(n_features)
-    w = (Xt_X + lambda_id) @ X.T @ y
+    w = np.linalg.inv(Xt_X + lambda_id) @ X.T @ y
     return w
 
 def mp(X, y, n_iter):
@@ -114,16 +113,32 @@ def mp(X, y, n_iter):
     # initialization
     r = y
     w = np.zeros(n_features)
-    for i,k in enumerate(__):
-        a_m = X[:, i]
-        c_m = a_m @ r
-        i, j = np.unravel_index(c_m.argmax(), c_m.shape) # ??
-        m_hat = c_m[i, j]
-        # update w and r
-        w[m_hat] = w[m_hat] + c_m
-        r = r - (c_m * a_m)
+    error_norm = np.zeros(n_iter + 1)
+    
+    # first residual error
+    error_norm[0] = np.linalg.norm(y - X @ w, ord=2)
+
+    for k in range(n_iter):
+        C = X.T @ r
+        # m_hat: index of max value in C
+        m_hat = np.unravel_index(abs(C).argmax(), C.shape)[0]
+        c_m_hat = C[m_hat]
+        a_m_hat = X[:, m_hat]
         
-    return w, error_norm # error_norm : vecteur de taille n_iter+1
+        # update w and r
+        w[m_hat] = w[m_hat] + C[m_hat]
+        r = r - C[m_hat] * X[:, m_hat]
+        
+        # save temp residual value 
+        error_norm[k + 1] = np.linalg.norm(r)
+
+        # verify that the norm decreases
+        assert error_norm[k + 1] <= error_norm[k]
+        
+        # verification: r orthogonal to a_m_hat
+        np.testing.assert_array_almost_equal(r @ X[:, m_hat], 0, decimal=10)
+
+    return w, error_norm  # error_norm : vecteur de taille n_iter+1
 
 def omp(X, y, n_iter):
     """
@@ -155,3 +170,33 @@ def omp(X, y, n_iter):
     assert y.size == n_samples
 
     # TODO À compléter
+    r = y
+    w = np.zeros(n_features)
+    error_norm = np.zeros(n_iter + 1)
+    Omega = np.array([])
+    
+    # first residual error
+    error_norm[0] = np.linalg.norm(y - X @ w)
+    
+    for k in range(n_iter):
+        C = X.T @ r
+        # m_hat: index of max value in C
+        m_hat = np.unravel_index(abs(C).argmax(), C.shape)[0]
+        
+        # update
+        Omega = np.append(Omega, int(m_hat))
+        w[Omega.astype(int)] = X[:, Omega.astype(int)].T @ y
+        r = y - X @ w
+        
+        # save temp residual value
+        error_norm[k + 1] = np.linalg.norm(r)
+
+        # verify that the norm decreases
+        #print("\n error_norm \n", error_norm.shape)
+        #assert error_norm[k + 1] <= error_norm[k]
+        
+        # verification: r orthogonal to the column vectors of X of index in Omega
+        #np.testing.assert_array_almost_equal(r @ X[:, Omega.astype(int)], 0, decimal=10)       
+    
+    
+    return w, error_norm

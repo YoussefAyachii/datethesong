@@ -236,6 +236,13 @@ class LinearRegressionRidge(LinearRegression):
         LinearRegression.fit(self, X, y)
 
         # TODO À compléter
+        self.b = np.mean(y)
+        
+        X_tild, norm_coefs = normalize_dictionary(X)
+        y_tild = y - self.b
+        w_tild = ridge_regression(X_tild, y_tild, lambda_ridge=self.lambda_ridge)
+
+        self.w = w_tild/ norm_coefs
 
 
 class LinearRegressionMp(LinearRegression):
@@ -270,6 +277,13 @@ class LinearRegressionMp(LinearRegression):
         LinearRegression.fit(self, X, y)
 
         # TODO À compléter
+        self.b = np.mean(y)
+        
+        X_tild, norm_coefs = normalize_dictionary(X)
+        y_tild = y - self.b
+        w_tild, _ = mp(X_tild, y_tild, n_iter=self.n_iter)
+
+        self.w = w_tild / norm_coefs
 
 
 class LinearRegressionOmp(LinearRegression):
