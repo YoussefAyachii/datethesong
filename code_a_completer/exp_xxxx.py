@@ -15,6 +15,7 @@ X_labeled, y_labeled, X_unlabeled = load_data("data/YearPredictionMSD_100.npz")
 N = 500
 X_labeled, y_labeled, X_unlabeled = X_labeled[:500, :N], y_labeled[:N], X_unlabeled[:N]
 
+
 X_train, y_train, X_test, y_test = split_data(X_labeled, y_labeled, ratio=2/3)
 
 # apprenez votre algorithm sur ces donnees
