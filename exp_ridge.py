@@ -26,21 +26,31 @@ X_train, y_train, X_test, y_test = split_data(
 ridge_reg = LinearRegressionRidge(lambda_ridge=lambda_ridge)
 ridge_reg.fit(X_train, y_train)
 
-# controler le comportement de votre algo en affichant (plot) et commentant l'erreur du residu en en fonction des iteration
+# controler le comportement de votre algo en
+# affichant (plot) et commentant l'erreur du residu en fonction des iteration
 # (valeurs initiales et finales, decroissance, coherence avec les coefficients de regression obtenus, nmbre d'iterations)
 y_hat = ridge_reg.predict(X_test)
 errors = np.zeros(len(y_test))
 lse_evolutive = np.zeros(len(y_test))
 for i in range(len(y_test)):
-    error = np.square(y_hat[i] - y_test[i])
+    resid_error = abs(y_hat[i] - y_test[i])
     
-    errors[i] = error
-    lse_evolutive[i] = np.mean(np.sum(errors[:i]))
+    errors[i] = resid_error
+
+    lse_evolutive[i] = np.mean(np.sqrt(np.sum(np.square(errors[:i]))) ** 2)
+
+print(errors)
+print(lse_evolutive)
+
 
 fig = plt.figure()
 ax = plt.axes()
 plt.plot(lse_evolutive)
-plt.show()
+plt.savefig("figures/exp_ridge.png")
 
-least_square_error = np.mean(np.sum(np.square(y_hat - y_test)))
-print(least_square_error)
+fig = plt.figure()
+ax = plt.axes()
+plt.plot(errors)
+plt.savefig("figures/exp_ridge2.png")
+
+least_square_error = np.mean(np.sqrt(np.sum(np.square(y_hat - y_test)))) ** 2

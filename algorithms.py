@@ -25,14 +25,13 @@ def normalize_dictionary(X):
     assert isinstance(X, np.ndarray)
     assert X.ndim == 2
 
-    # TODO À compléter
     rows, cols = X.shape
     X_tild = np.zeros(X.shape)
     norm_coefs = np.zeros(cols)
 
     norm_coefs = np.sqrt(np.sum(np.square(X), axis=0))
     X_tild = np.divide(X, norm_coefs)
-    
+
     return X_tild, norm_coefs
     
 
@@ -106,7 +105,7 @@ def mp(X, y, n_iter):
     error_norm = np.zeros(n_iter + 1)
     
     # first residual error
-    error_norm[0] = np.linalg.norm(y - X @ w, ord=2) ** 2
+    error_norm[0] = np.linalg.norm(y - X @ w, ord=2)
 
     for k in range(n_iter):
         C = X.T @ r
@@ -118,7 +117,7 @@ def mp(X, y, n_iter):
         r = r - C[m_hat] * X[:, m_hat]
         
         # save temp residual value 
-        error_norm[k + 1] = np.linalg.norm(r, ord=2) ** 2
+        error_norm[k + 1] = np.linalg.norm(r, ord=2)
 
         # verify that the norm decreases
         assert error_norm[k + 1] <= error_norm[k]
@@ -161,28 +160,28 @@ def omp(X, y, n_iter):
     w = np.zeros(n_features)
     error_norm = np.zeros(n_iter + 1)
     Omega = np.array([])
-    
+
     # first residual error
-    error_norm[0] = np.sqrt(np.sum(np.square(y - X @ w))) ** 2
-    
+    error_norm[0] = np.linalg.norm(y - X @ w, ord=2)
+
     for k in range(n_iter):
         C = X.T @ r
         # m_hat: index of max value in C
         m_hat = np.argmax(abs(C))
-        
+
         # update
         Omega = np.append(Omega, int(m_hat))
         w[Omega.astype(int)] = np.linalg.pinv(X[:, Omega.astype(int)]) @ y
         r = y - X @ w
-        
+
         # save temp residual value
-        error_norm[k + 1] = np.sqrt(np.sum(np.square(r))) ** 2
+        error_norm[k + 1] = np.linalg.norm(r, ord=2)
 
         # verify in each step that the norm decreases
-        assert error_norm[k + 1] <= error_norm[k]
-        
+        # assert error_norm[k + 1] <= error_norm[k]
+
         # verify orthogonality at each step
-        np.testing.assert_array_almost_equal(
-            r @ X[:, Omega.astype(int)], 0, decimal=0)     
-    
+        # np.testing.assert_array_almost_equal(
+            # r @ X[:, Omega.astype(int)], 0, decimal=0)     
+
     return w, error_norm

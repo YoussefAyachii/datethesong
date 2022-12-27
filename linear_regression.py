@@ -5,7 +5,8 @@
 
 import numpy as np
 
-from algorithms import mp, omp, ridge_regression, normalize_dictionary
+from algorithms import(mp, omp, ridge_regression,
+                       normalize_dictionary)
 
 
 class LinearRegression:
