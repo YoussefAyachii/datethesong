@@ -1,17 +1,12 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
+#!/usr/bin/env python3.9
 
-@author: Valentin Emiya, AMU & CNRS LIS
-"""
+"""Histogram: number of songs per release year"""
+
 import numpy as np
 import matplotlib.pyplot as plt
+
 from data_utils import load_data
 
-
-""" Build the histogram of the years of the songs from the training set and
-export the figure to the image file hist_train.png
-"""
 
 _, y_labeled, _ = load_data("data/YearPredictionMSD_100.npz")
 
@@ -20,5 +15,8 @@ ax = plt.axes()
 plt.hist(y_labeled,
          bins=np.arange(int(min(y_labeled)), int(max(y_labeled)), 1))
 plt.style.context("seaborn")
-plt.title("histogram of the number of songs per year")
+plt.xlabel("Release year")
+plt.ylabel("Number of songs")
+plt.title("Histogram of the number of songs per release year"
+          + "\n from the MSD_100 dataset")
 plt.savefig("figures/hist_year.png")

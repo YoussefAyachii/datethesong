@@ -1,10 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Oct  5 12:52:08 2017
+#!/usr/bin/env python3.9
 
-@author: Valentin Emiya, AMU & CNRS LIS
-"""
+"""Testing data_utils.py functions"""
 
 import unittest
 import numpy as np
@@ -50,7 +46,6 @@ class TestLoadData(unittest.TestCase):
     def test_first_last_elements_y(self):
         """test the equality between the first and last column
         of the y_labelised vector"""
-
         y_first5r = np.array([1985, 2005, 1998, 1973, 1957])
         y_last5r = np.array([2006, 1960, 1976, 1988, 2003])
 

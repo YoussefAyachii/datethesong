@@ -1,3 +1,7 @@
+#!/usr/bin/env python3.9
+
+"""Functions for data loading and partitioning."""
+
 import numpy as np
 
 
@@ -17,10 +21,8 @@ def load_data(filename):
     y_labeled : np.ndarray [n]
         Vector of n labels related to the n feature vectors
     X_unlabeled :
-
     """
-    npz_data = np.load(filename)
-    dict_data = dict(npz_data)
+    dict_data = dict(np.load(filename))
 
     X_labeled = dict_data["X_labeled"]
     y_labeled = dict_data["y_labeled"]
@@ -31,7 +33,8 @@ def load_data(filename):
 
 def randomize_data(X, y):
     """
-    Randomly shuffle the rows, i.e. observations, in the labeled set (X, y).
+    Randomly shuffle the rows, i.e. observations,
+    in the labeled set (X, y).
 
     Parameters
     ----------
@@ -50,21 +53,21 @@ def randomize_data(X, y):
     Raises
     ------
     ValueError
-        If the number of rows in X differs from the number of elements in y.
+        If number of rows in X differs from number of elements in y.
     """
     if X.shape[0] != y.shape[0]:
-        raise ValueError('Number of rows in X ({}) differs from the number of '
-                         'elements in y'
+        raise ValueError('Number of rows in X ({}) differs from '
+                         'the number of elements in y'
                          .format(X.shape[0], y.shape[0]))
     else:
-        n = X.shape[0]
-        index_rand = np.random.permutation(n)
+        index_rand = np.random.permutation(X.shape[0])
         Xr, yr = X[index_rand, :], y[index_rand]
         return Xr, yr
 
 def split_data(X, y, ratio):
     """
-    Split a set of n labeled examples into two subsets as a random partition.
+    Split a set of n labeled examples
+    into two subsets as a random partition.
 
     split_data(X, y, ratio) returns a tuple (X1, y1, X2, y2). The n input
     labeled examples (X,y) are randomly permuted and split as a partition
@@ -90,7 +93,6 @@ def split_data(X, y, ratio):
         Array of n2 feature vectors
     y2 : np.ndarray [n2]
         Vector of n2 labels selected
-
     """
     n = X.shape[0]
     n1 = int(ratio * n)
@@ -98,6 +100,6 @@ def split_data(X, y, ratio):
 
     Xr, yr = randomize_data(X, y)
     X1, X2 = Xr[:n1, ], Xr[n1:, ]
-    y1, y2 = yr[:n1], yr[n1: ]
+    y1, y2 = yr[:n1], yr[n1:]
     
-    return (X1, y1, X2, y2)
+    return X1, y1, X2, y2

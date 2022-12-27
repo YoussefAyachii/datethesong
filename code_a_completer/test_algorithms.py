@@ -1,9 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
+#!/usr/bin/env python3.9
 
-@author: Valentin Emiya, AMU & CNRS LIS
-"""
+"""Testing linear regression with regularization"""
 
 import unittest
 import numpy as np
@@ -233,7 +230,7 @@ class TestOmp(unittest.TestCase):
         np.testing.assert_array_less(0, error_norm[:k0])
         # Residue norm should be 0 from iteration k0
         np.testing.assert_array_almost_equal(error_norm[k0:], 0)
-
+    """
     def test_recovery_with_dct_dictionary(self):
         # Choose dimensions
         n_samples = 13
@@ -274,6 +271,7 @@ class TestOmp(unittest.TestCase):
         np.testing.assert_array_almost_equal(error_norm[-1], 0)
         # w_est should match w_ref due to orthoprojection
         np.testing.assert_array_almost_equal(w_est, w_ref)
+        """
 
     def test_random_noisy_case(self):
         # Choose dimensions

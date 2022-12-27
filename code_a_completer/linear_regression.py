@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3.9
+
+"""Implementation of different linear regression methods
 """
 
-@author: Valentin Emiya, AMU & CNRS LIS
-"""
 import numpy as np
+
 from algorithms import mp, omp, ridge_regression, normalize_dictionary
 
 
@@ -12,13 +12,14 @@ class LinearRegression:
     """
     Generic class for linear regression
 
-    Two attributes ``w`` and ``b`` are used for a linear regression of the form
-    f(x) = w.x + b
+    Two attributes ``w`` and ``b`` are used for
+    a linear regression of the form f(x) = w.x + b
 
-    All linear regression method should inherit from :class:`LinearRegression`,
-    and implement the ``fit`` method to learn ``w`` and ``b``. Method
-    ``predict`` implemented in :class:`LinearRegression` will be inherited
-    without needed to be reimplemented.
+    All linear regression method should inherit
+    from :class:`LinearRegression`, and implement the ``fit`` method
+    to learn ``w`` and ``b``.
+    Method ``predict`` implemented in :class:`LinearRegression` will
+    be inherited without needed to be reimplemented.
     """
     def __init__(self):
         self.w = None
@@ -68,7 +69,7 @@ class LinearRegression:
 
 class LinearRegressionLeastSquares(LinearRegression):
     """
-    Linear regression using a least-squares method
+    Linear regression using the least-squares method
     """
     def __init__(self):
         LinearRegression.__init__(self)
@@ -83,35 +84,27 @@ class LinearRegressionLeastSquares(LinearRegression):
             Array of n training feature vectors with size d
         y : np.ndarray [n]
             Vector of n training labels related to X
-        
-        Returns
-        ---------
-        w : float or np.array
-        slope value of the linear regression function (a in y=ax+b)
-        vector of coefficients of the linear regression (a(i) in y=b+a(1)x+a(2)x**2+...)
-        b : float
-        intercept of the linear regression function
         """
         LinearRegression.fit(self, X, y)
 
-        # TODO À compléter
         N, M = X.shape
-        X1 = np.concatenate((X, np.ones(N)[:, np.newaxis]), axis=1)
-        X1_pinv = np.linalg.pinv(X1)
-        X1_pinv_y = X1_pinv @ y
-        self.w, self.b = X1_pinv_y[:-1], X1_pinv_y[-1]
+        Xtild = np.concatenate((X, np.ones(N)[:, np.newaxis]), axis=1)
+        Xtild_pinv = np.linalg.pinv(Xtild)
+        Xtildpinv_y = Xtild_pinv @ y
+        self.w, self.b = Xtildpinv_y[:M], Xtildpinv_y[M]
 
 class LinearRegressionMean(LinearRegression):
     """
-    Constant-valued regression function equal to the mean of the training
-    labels
+    Constant-valued regression function equal to the mean
+    of the training labels
     """
     def __init__(self):
         LinearRegression.__init__(self)
 
     def fit(self, X, y):
         """
-        Learn a constant function equal to the mean of the training labels
+        Learn a constant function equal to the mean
+        of the training labels
 
         Parameters
         ----------
@@ -119,17 +112,9 @@ class LinearRegressionMean(LinearRegression):
             Array of n training feature vectors with size d
         y : np.ndarray [n]
             Vector of n training labels related to X
-        
-        Returns
-        ----------
-        w: np.array
-        a null vector of the same dimension than the number of columns of X
-        b: float
-        the mean of the training labels
         """
         LinearRegression.fit(self, X, y)
 
-        # TODO À compléter
         N, M = X.shape
         self.w = np.zeros(M)
         self.b = np.sum(y) / N
@@ -138,15 +123,16 @@ class LinearRegressionMean(LinearRegression):
 
 class LinearRegressionMedian(LinearRegression):
     """
-    Constant-valued regression function equal to the median of the training
-    labels
+    Constant-valued regression function equal to the median
+    of the training labels
     """
     def __init__(self):
         LinearRegression.__init__(self)
 
     def fit(self, X, y):
         """
-        Learn a constant function equal to the median of the training labels
+        Learn a constant function equal to the median
+        of the training labels
 
         Parameters
         ----------
@@ -154,25 +140,18 @@ class LinearRegressionMedian(LinearRegression):
             Array of n training feature vectors with size d
         y : np.ndarray [n]
             Vector of n training labels related to X
-        
-        Returns
-        ----------
-        w: np.array
-        a null vector of the same dimension than the number of columns of X
-        b: float
-        the median of the training labels
         """
         LinearRegression.fit(self, X, y)
 
-        # TODO À compléter
-        N, M = X.shape
+        _, M = X.shape
         self.w = np.zeros(M)
         self.b = np.median(y)
 
 
 class LinearRegressionMajority(LinearRegression):
     """
-    Constant-valued regression function equal to the majority training label
+    Constant-valued regression function equal to the majority
+    of the training label
     """
     def __init__(self):
         LinearRegression.__init__(self)
@@ -187,22 +166,14 @@ class LinearRegressionMajority(LinearRegression):
             Array of n training feature vectors with size d
         y : np.ndarray [n]
             Vector of n training labels related to X
-        
-        Returns
-        ----------
-        w: np.array
-        a null vector of the same dimension than the number of columns of X
-        b: float
-        la valeur la plus presente dans y, i.e. l'annee la plus frequente (majoritaire).
         """
         LinearRegression.fit(self, X, y)
 
         h, bins = np.histogram(y, bins=np.arange(np.min(y), np.max(y) + 2))
 
-        # TODO À compléter
-        N, M = X.shape
+        _, M = X.shape
         self.w = np.zeros(M)
-        self.b = bins[np.where(h == np.max(h))][0] # renvoi plusieurs valeurs: doit renvoyer une seule.
+        self.b = bins[np.argmax(h)]
 
 
 class LinearRegressionRidge(LinearRegression):
@@ -235,7 +206,6 @@ class LinearRegressionRidge(LinearRegression):
         """
         LinearRegression.fit(self, X, y)
 
-        # TODO À compléter
         self.b = np.mean(y)
         
         X_tild, norm_coefs = normalize_dictionary(X)
@@ -276,7 +246,6 @@ class LinearRegressionMp(LinearRegression):
         """
         LinearRegression.fit(self, X, y)
 
-        # TODO À compléter
         self.b = np.mean(y)
         
         X_tild, norm_coefs = normalize_dictionary(X)
@@ -317,4 +286,10 @@ class LinearRegressionOmp(LinearRegression):
         """
         LinearRegression.fit(self, X, y)
 
-        # TODO À compléter
+        self.b = np.mean(y)
+        
+        X_tild, norm_coefs = normalize_dictionary(X)
+        y_tild = y - self.b
+        w_tild, _ = omp(X_tild, y_tild, n_iter=self.n_iter)
+
+        self.w = w_tild / norm_coefs

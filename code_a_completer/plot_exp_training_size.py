@@ -1,39 +1,66 @@
-"""_summary_"""
+#!/usr/bin/env python3.9
+
+"""Plot algorithms performances depnding on data size"""
 
 import numpy as np
 import matplotlib.pyplot as plt
+
 from data_utils import load_data, split_data
-from linear_regression import LinearRegressionMajority, LinearRegressionMedian, LinearRegressionMean, LinearRegressionLeastSquares
-from exp_hyperparam import learn_all_with_RIDGE, learn_all_with_MP
+from linear_regression import (LinearRegressionMajority,
+                               LinearRegressionMedian,
+                               LinearRegressionMean,
+                               LinearRegressionLeastSquares)
+#from exp_hyperparam import learn_all_with_RIDGE, learn_all_with_MP
 
 
-# Load npz file
+# Load performance data
 npz_ = np.load("exp_training_size_results.npz")
-valid_error, train_error, N = npz_["valid_error"], npz_["train_error"], npz_["N"]
-learning_time = npz_["learning_time"]
+print(npz_)
+N = npz_["N"]
+train_error_mx = npz_["train_error_mx"]
+valid_error_mx = npz_["valid_error_mx"]
+learning_time_mx = npz_["learning_time_mx"]
+methods_name = npz_["methods_name"]
+colors = ["black", "blue", "green", "red"]
 
-# Part 1: MSE of each linear regression method depending on the sample size
-fig = plt.figure()
-ax = plt.axes()
+print(train_error_mx)
+print(N)
 
-ax.semilogy(N, valid_error[:, 0], color="red", linestyle="-", label="majority")
-ax.semilogy(N, valid_error[:, 1], color="blue", linestyle="-", label="median")
-ax.semilogy(N, valid_error[:, 2], color="green", linestyle="-", label="mean")
-ax.semilogy(N, valid_error[:, 3], color="black", linestyle="-", label="least square")
+# MSE of each method on the validation set depending on dataset size
+fig1 = plt.figure()
+ax1 = plt.axes()
+for i in range(len(methods_name)):
+    ax1.loglog(N, valid_error_mx[:, i], color=colors[i],
+            linestyle="-", label=methods_name[i])
+    if methods_name[i] == "least squares":
+        train_error_mx[:, i] = np.round(train_error_mx[:, i], 0) + 1
+    ax1.margins(x=0, y=0)
+    ax1.set_yticks(np.arange(11) - 1)
+    ax1.loglog(N, train_error_mx[:, i], color=colors[i],
+        linestyle="dotted", label=methods_name[i])
 
-ax.semilogy(N, train_error[:, 0], color="red", linestyle="dotted", label="majority")
-ax.semilogy(N, train_error[:, 1], color="blue", linestyle="dotted", label="median")
-ax.semilogy(N, train_error[:, 2], color="green", linestyle="dotted", label="mean")
-ax.semilogy(N, train_error[:, 3], color="black", linestyle="dotted", label="least square")
+ax1.set_xlabel("Sample size (N)")
+ax1.set_ylabel("Error (MSE)")
+ax1.set_title("Performance of different linear regression algorithms"
+             + "\n depending on the sample size of the data set")
+ax1.legend(loc = "upper right")
+plt.savefig("figures/plot_exp_training_size_mse.png")
 
-ax.set_xlabel("Sample size (N)")
-ax.set_ylabel("Error (MSE)")
-ax.set_title("Performance of different Linear regression strategies \n depending on the sample size"+
-             " of the data set")
-ax.legend()
+# time spent by each algo to fit train set depending on the dataset size
+fig2 = plt.figure()
+ax2 = plt.axes()
+for i in range(len(methods_name)):
+    ax2.semilogy(N, learning_time_mx[:, i], color=colors[i],
+            linestyle="-", label=methods_name[i])
 
-plt.savefig("figures/plot_exp_training_size_error.png")
-
+ax2.set_xlabel("Sample size (N)")
+ax2.set_ylabel("Time (s)")
+ax2.set_title("Time spent by each linear regression algorithm"
+             + "to fit the training data set"
+             + "\n depending on the sample size of the data set")
+ax2.legend(loc = "upper right")
+plt.savefig("figures/plot_exp_training_size_time.png")
+"""
 # Part 2 : learning time of each linear regression method depending on the sample size
 fig = plt.figure()
 ax = plt.axes()
@@ -122,9 +149,7 @@ plt.savefig("figures/plot_exp_training_size.png")
 
 
 def learn_best_predictor_and_predict_test_data(X, y, learn_all_with_ALGO_fct):
-    """
-    
-    """
+
     
     # partitionne les donnes etiquetes en un ensemble de taille 500 et un ensemble de validation 2
     S_train_X, S_train_y, X_valid2, y_valid2 = split_data(X, y, ratio=2/3)
@@ -156,6 +181,6 @@ learn_best_predictor_and_predict_test_data(
     X_labeled, y_labeled, learn_all_with_ALGO_fct=learn_all_with_RIDGE)
 
     
-    
+"""
 
     

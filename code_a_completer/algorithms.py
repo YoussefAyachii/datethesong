@@ -1,9 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
+#!/usr/bin/env python3.9
 
-@author: Valentin Emiya, AMU & CNRS LIS
-"""
+"""Regularization methods for linear regression problems"""
+
 import numpy as np
 
 
@@ -31,13 +29,7 @@ def normalize_dictionary(X):
     rows, cols = X.shape
     X_tild = np.zeros(X.shape)
     norm_coefs = np.zeros(cols)
-    """
-    for col in range(cols):
-        length = np.sqrt(np.sum(X[row][col]**2 for row in range(rows)))
-        norm_coefs[col] = length
-        for row in range(rows):
-            X_tild[row][col] = X[row][col] / length
-    """
+
     norm_coefs = np.sqrt(np.sum(np.square(X), axis=0))
     X_tild = np.divide(X, norm_coefs)
     
@@ -74,7 +66,6 @@ def ridge_regression(X, y, lambda_ridge):
     assert y.ndim == 1
     assert y.size == n_samples
 
-    # TODO À compléter
     Xt_X = X.T @ X
     lambda_id = lambda_ridge * np.eye(n_features)
     w = np.linalg.inv(Xt_X + lambda_id) @ X.T @ y
@@ -109,28 +100,25 @@ def mp(X, y, n_iter):
     assert y.ndim == 1
     assert y.size == n_samples
 
-    # TODO À compléter
     # initialization
     r = y
     w = np.zeros(n_features)
     error_norm = np.zeros(n_iter + 1)
     
     # first residual error
-    error_norm[0] = np.linalg.norm(y - X @ w, ord=2)
+    error_norm[0] = np.linalg.norm(y - X @ w, ord=2) ** 2
 
     for k in range(n_iter):
         C = X.T @ r
         # m_hat: index of max value in C
-        m_hat = np.unravel_index(abs(C).argmax(), C.shape)[0]
-        c_m_hat = C[m_hat]
-        a_m_hat = X[:, m_hat]
+        m_hat = np.argmax(abs(C))
         
         # update w and r
         w[m_hat] = w[m_hat] + C[m_hat]
         r = r - C[m_hat] * X[:, m_hat]
         
         # save temp residual value 
-        error_norm[k + 1] = np.linalg.norm(r)
+        error_norm[k + 1] = np.linalg.norm(r, ord=2) ** 2
 
         # verify that the norm decreases
         assert error_norm[k + 1] <= error_norm[k]
@@ -138,7 +126,7 @@ def mp(X, y, n_iter):
         # verification: r orthogonal to a_m_hat
         np.testing.assert_array_almost_equal(r @ X[:, m_hat], 0, decimal=10)
 
-    return w, error_norm  # error_norm : vecteur de taille n_iter+1
+    return w, error_norm
 
 def omp(X, y, n_iter):
     """
@@ -169,34 +157,32 @@ def omp(X, y, n_iter):
     assert y.ndim == 1
     assert y.size == n_samples
 
-    # TODO À compléter
     r = y
     w = np.zeros(n_features)
     error_norm = np.zeros(n_iter + 1)
     Omega = np.array([])
     
     # first residual error
-    error_norm[0] = np.linalg.norm(y - X @ w)
+    error_norm[0] = np.sqrt(np.sum(np.square(y - X @ w))) ** 2
     
     for k in range(n_iter):
         C = X.T @ r
         # m_hat: index of max value in C
-        m_hat = np.unravel_index(abs(C).argmax(), C.shape)[0]
+        m_hat = np.argmax(abs(C))
         
         # update
         Omega = np.append(Omega, int(m_hat))
-        w[Omega.astype(int)] = X[:, Omega.astype(int)].T @ y
+        w[Omega.astype(int)] = np.linalg.pinv(X[:, Omega.astype(int)]) @ y
         r = y - X @ w
         
         # save temp residual value
-        error_norm[k + 1] = np.linalg.norm(r)
+        error_norm[k + 1] = np.sqrt(np.sum(np.square(r))) ** 2
 
-        # verify that the norm decreases
-        #print("\n error_norm \n", error_norm.shape)
-        #assert error_norm[k + 1] <= error_norm[k]
+        # verify in each step that the norm decreases
+        assert error_norm[k + 1] <= error_norm[k]
         
-        # verification: r orthogonal to the column vectors of X of index in Omega
-        #np.testing.assert_array_almost_equal(r @ X[:, Omega.astype(int)], 0, decimal=10)       
-    
+        # verify orthogonality at each step
+        np.testing.assert_array_almost_equal(
+            r @ X[:, Omega.astype(int)], 0, decimal=0)     
     
     return w, error_norm
