@@ -89,8 +89,7 @@ class LinearRegressionLeastSquares(LinearRegression):
 
         N, M = X.shape
         Xtild = np.concatenate((X, np.ones(N)[:, np.newaxis]), axis=1)
-        Xtild_pinv = np.linalg.pinv(Xtild)
-        Xtildpinv_y = Xtild_pinv @ y
+        Xtildpinv_y = np.linalg.pinv(Xtild) @ y
         self.w, self.b = Xtildpinv_y[:M], Xtildpinv_y[M]
 
 class LinearRegressionMean(LinearRegression):
