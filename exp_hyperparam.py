@@ -5,6 +5,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+
 from data_utils import load_data, randomize_data, split_data
 from linear_regression import(LinearRegressionRidge,
                               LinearRegressionMp,
@@ -122,8 +123,9 @@ def hyper_plot(hypers, hyper_name, method,
             linestyle=":", color="blue")
     ax.scatter(results[np.argmin(results[:, 2]), 0],
                np.min(results[:, 2]), color="red",
-               label="best lambda = {} ".format(
-                   round(results[np.argmin(results[:, 2]), 0], 3)))
+               label="best lambda = {}\nlowest mse = {}"
+               .format(round(results[np.argmin(results[:, 2]), 0], 3),
+                       round(min(results[:, 2]), 3)))
     plt.xlabel("{}".format(hyper_name))
     plt.ylabel("Least Square Error")
     plt.legend(loc="upper right")
@@ -220,7 +222,7 @@ X_valid2, y_valid2 = X_valid, y_valid  # not provided to th learn_ fct
 ridge = learn_all_with_RIDGE(X_train, y_train)
 ridge.fit(X_train, y_train) 
 y_hat_ridge = ridge.predict(X_valid2)
-print("\n Ridge LSE: with the best kmax\n",
+print("\n Ridge regression best kmax\n",
       round(np.linalg.norm(y_hat_ridge - y_valid2, ord=2), 2))
 
 
@@ -274,7 +276,7 @@ X_valid2, y_valid2 = X_valid, y_valid
 mp = learn_all_with_MP(X_train, y_train)
 mp.fit(X_train, y_train) 
 y_hat_mp = mp.predict(X_valid2)
-print("\n Matching Poursuit LSE with the best kmax: \n",
+print("\n Matching Poursuit best kmax: \n",
       round(np.linalg.norm(y_hat_mp - y_valid2, ord=2), 2))
 
 
@@ -328,5 +330,5 @@ X_valid2, y_valid2 = X_valid, y_valid
 omp = learn_all_with_OMP(X_train, y_train)
 omp.fit(X_train, y_train) 
 y_hat_omp = omp.predict(X_valid2)
-print("\n Orthogonal Matching Poursuit LSE with the best kmax: \n",
+print("\n Orthogonal Matching Poursuit best kmax: \n",
       round(np.linalg.norm(y_hat_omp - y_valid2, ord=2), 2))

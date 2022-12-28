@@ -63,13 +63,13 @@ def algo_perf_dep_on_dataset_size(X_train, y_train,
         algo.fit(X_train_temp, y_train_temp)
         t1 = time()
         
-        # prediction error on validation set
+        # prediction error (mse) on validation set
         yhat_valid = algo.predict(X_valid)
-        valid_error[i] = np.mean(np.square(yhat_valid - y_valid)) ** 2
+        valid_error[i] = np.mean(np.square(yhat_valid - y_valid))
         
-        # prediction error on training set
+        # prediction error (mse) on training set
         yhat_train = algo.predict(X_train_temp)
-        train_error[i] = np.mean(np.square(yhat_train - y_train_temp)) ** 2
+        train_error[i] = np.mean(np.square(yhat_train - y_train_temp))
 
         # learning time
         learning_time[i] = t1 - t0
@@ -112,8 +112,3 @@ np.savez("exp_training_size_results.npz",
     train_error_mx=train_error_mx,
     valid_error_mx=valid_error_mx,
     learning_time_mx=learning_time_mx)
-
-print("\n valid error: \n ", valid_error_mx)
-print("\n train error: \n ", train_error_mx)
-print("\n N vector: \n", N)
-print("\n learning_time: \n", learning_time_mx)
