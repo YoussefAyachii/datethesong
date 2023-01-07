@@ -5,7 +5,8 @@
 import unittest
 import numpy as np
 
-from data_utils import load_data, randomize_data, split_data
+from datethesong.algorithms.data_utils import(
+    load_data, randomize_data, split_data)
 
 
 class TestLoadData(unittest.TestCase):
@@ -13,7 +14,7 @@ class TestLoadData(unittest.TestCase):
     Nom du fichier défini comme un attribut accessible dans toutes les
     méthodes.
     """
-    filename = 'data/YearPredictionMSD_100.npz'
+    filename = 'datethesong/data/YearPredictionMSD_100.npz'
 
     def test_data_shape(self):
         """test the shape of each matrix"""

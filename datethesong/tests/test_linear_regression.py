@@ -8,9 +8,11 @@
 import unittest
 import numpy as np
 
-from linear_regression import LinearRegression, LinearRegressionLeastSquares, \
-    LinearRegressionMean, LinearRegressionMedian, LinearRegressionMajority, \
-    LinearRegressionRidge, LinearRegressionMp, LinearRegressionOmp
+from datethesong.algorithms.linear_regression import(
+    LinearRegression, LinearRegressionLeastSquares,
+    LinearRegressionMean, LinearRegressionMedian,
+    LinearRegressionMajority, LinearRegressionRidge,
+    LinearRegressionMp, LinearRegressionOmp)
 
 
 class TestLinearRegression(unittest.TestCase):

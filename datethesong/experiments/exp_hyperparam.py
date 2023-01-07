@@ -6,14 +6,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from data_utils import load_data, randomize_data, split_data
-from linear_regression import(LinearRegressionRidge,
-                              LinearRegressionMp,
-                              LinearRegressionOmp)
+from datethesong.algorithms.data_utils import(
+    load_data, split_data)
+from datethesong.algorithms.linear_regression import(
+    LinearRegressionRidge, LinearRegressionMp, LinearRegressionOmp)
 
 # load data
 X_labeled, y_labeled, X_unlabeled = load_data(
-    "data/YearPredictionMSD_100.npz")
+    "datethesong/data/YearPredictionMSD_100.npz")
 X_train, y_train, X_valid, y_valid = split_data(
     X_labeled, y_labeled, ratio=2/3)
 
@@ -217,14 +217,6 @@ def learn_all_with_RIDGE(X,y):
         
     return LinearRegressionRidge(lambda_ridge=best_lambda)
 
-# test
-X_valid2, y_valid2 = X_valid, y_valid  # not provided to th learn_ fct
-ridge = learn_all_with_RIDGE(X_train, y_train)
-ridge.fit(X_train, y_train) 
-y_hat_ridge = ridge.predict(X_valid2)
-print("\n Ridge regression best kmax\n",
-      round(np.linalg.norm(y_hat_ridge - y_valid2, ord=2), 2))
-
 
 def learn_all_with_MP(X,y):
     """Determine the best ridge hyper parameter (kmax)
@@ -271,14 +263,6 @@ def learn_all_with_MP(X,y):
     
     return LinearRegressionMp(n_iter=best_kmax)
 
-# test
-X_valid2, y_valid2 = X_valid, y_valid
-mp = learn_all_with_MP(X_train, y_train)
-mp.fit(X_train, y_train) 
-y_hat_mp = mp.predict(X_valid2)
-print("\n Matching Poursuit best kmax: \n",
-      round(np.linalg.norm(y_hat_mp - y_valid2, ord=2), 2))
-
 
 def learn_all_with_OMP(X,y):
     """Determine the best ridge hyper parameter (kmax)
@@ -314,7 +298,7 @@ def learn_all_with_OMP(X,y):
         lse_train = np.linalg.norm(y_hat_train - y_train, ord=2)
 
         # error on validation set
-        y_hat_valid1 = mp.predict(X_valid1)
+        y_hat_valid1 = omp.predict(X_valid1)
         lse_valid1 = np.linalg.norm(y_hat_valid1 - y_valid1, ord=2)
 
         # save results
@@ -324,11 +308,3 @@ def learn_all_with_OMP(X,y):
     best_kmax = int(results[np.argmin(results[:, 2]), 0])
     
     return LinearRegressionOmp(n_iter=best_kmax)
-
-# test
-X_valid2, y_valid2 = X_valid, y_valid
-omp = learn_all_with_OMP(X_train, y_train)
-omp.fit(X_train, y_train) 
-y_hat_omp = omp.predict(X_valid2)
-print("\n Orthogonal Matching Poursuit best kmax: \n",
-      round(np.linalg.norm(y_hat_omp - y_valid2, ord=2), 2))

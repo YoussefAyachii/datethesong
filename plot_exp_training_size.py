@@ -10,13 +10,12 @@ from datethesong.algorithms.linear_regression import(
     LinearRegressionMajority, LinearRegressionMedian,
     LinearRegressionMean, LinearRegressionLeastSquares)
 
-from exp_hyperparam import learn_all_with_RIDGE
-from exp_hyperparam import learn_all_with_MP
-from exp_hyperparam import learn_all_with_OMP
+from datethesong.experiments.exp_hyperparam import(
+    learn_all_with_RIDGE, learn_all_with_MP, learn_all_with_OMP)
 
 
 # Load algo performances' data
-npz_ = np.load("datethesong/io/exp_training_size_results.npz")
+npz_ = np.load("exp_training_size_results.npz")
 N = npz_["N"]
 train_error_mx = npz_["train_error_mx"]
 valid_error_mx = npz_["valid_error_mx"]
@@ -64,12 +63,12 @@ ax2.legend(loc = "upper right")
 plt.savefig("figures/plot_exp_training_and_validation_size_time.png")
 
 
-# 10.
+# Part 10.
 # display performances of all algorithms according to sample size
 
 # load data
 X_labeled, y_labeled, X_unlabeled = load_data(
-    "datethesong/data/YearPredictionMSD_100.npz")
+    "data/YearPredictionMSD_100.npz")
 
 X_train_X_valid1, y_train_y_valid1, X_valid2, y_valid2 = split_data(
     X_labeled, y_labeled, ratio=2/3)
@@ -134,8 +133,7 @@ ax = plt.axes()
 method = ["ridge", "mp", "omp", "maj", "mean", "median", "ls"]
 colors = ["b", "g", "r", "c", "m", "k", "y"]
 for i in range(len(method)):
-    ax.loglog(N, error_mx[:, i], color=colors[i],
-              linestyle="-", label=method[i])
+    ax.loglog(N, error_mx[:, i], color=colors[i], linestyle="-", label=method[i])
 plt.legend(loc="upper right")
 plt.xlabel("Sample size (N)")
 plt.ylabel("Loss function (MSE)")
@@ -169,7 +167,7 @@ def learn_best_predictor_and_predict_test_data(
     -------
     Returns
     .npy: file
-        Results of algorithms performances saved into a .npy file.
+        Algorithms performances saved into a .npy file.
     """
     
     # partitionne les donnes etiquetes en train (n=500) et valid2
@@ -185,6 +183,9 @@ def learn_best_predictor_and_predict_test_data(
     b_hat = algo.b
     y_hat = algo.predict(X_valid2)
     mse_valid2 = np.mean(np.square(y_hat - y_valid2))
+    print("\n algorithm performances on sample validation 2 \n" +
+          f"\n w = {w_hat} \n b = {b_hat} \n"
+          + f"Loss Function (MSE) valid2 set = {mse_valid2} \n")
 
     # unlabeled data
     y_test = algo.predict(X_unlabeled)
@@ -195,4 +196,4 @@ learn_best_predictor_and_predict_test_data(
     X=X_labeled, y=y_labeled,
     learn_all_with_ALGO=learn_all_with_RIDGE,
     X_unlabeled=X_unlabeled,
-    file_path="datethesong/io/test_prediction_results.npy")
+    file_path="test_prediction_results.npy")

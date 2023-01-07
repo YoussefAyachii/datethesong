@@ -5,7 +5,7 @@
 
 import numpy as np
 
-from algorithms import(mp, omp, ridge_regression,
+from .algorithms import(mp, omp, ridge_regression,
                        normalize_dictionary)
 
 

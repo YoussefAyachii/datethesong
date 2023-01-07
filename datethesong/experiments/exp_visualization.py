@@ -5,10 +5,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from data_utils import load_data
+from datethesong.algorithms.data_utils import load_data
 
 
-_, y_labeled, _ = load_data("data/YearPredictionMSD_100.npz")
+_, y_labeled, _ = load_data("datethesong/data/YearPredictionMSD_100.npz")
 
 fig = plt.figure()
 ax = plt.axes()

@@ -7,11 +7,10 @@ depending on the size of the training dataset
 import numpy as np
 from time import time
 
-from data_utils import load_data, split_data
-from linear_regression import (LinearRegressionMean,
-                               LinearRegressionMedian,
-                               LinearRegressionMajority,
-                               LinearRegressionLeastSquares)
+from datethesong.algorithms.data_utils import load_data, split_data
+from datethesong.algorithms.linear_regression import(
+    LinearRegressionMean, LinearRegressionMedian,
+    LinearRegressionMajority, LinearRegressionLeastSquares)
 
 
 def algo_perf_dep_on_dataset_size(X_train, y_train,
@@ -79,7 +78,7 @@ def algo_perf_dep_on_dataset_size(X_train, y_train,
 
 # load data and fix data sizes vector N
 X_labeled, y_labeled, _ = load_data(
-    "data/YearPredictionMSD_100.npz")
+    "datethesong/data/YearPredictionMSD_100.npz")
 
 S_train_X, S_train_y, S_valid_X, S_valid_y = split_data(
     X_labeled, y_labeled, 2/3)
@@ -106,7 +105,7 @@ for i in range(len(methods)):
     valid_error_mx[:, i] = valid_error
     learning_time_mx[:, i] = learning_time
 
-np.savez("exp_training_size_results.npz",
+np.savez("datethesong/io/exp_training_size_results.npz",
     N=N,
     methods_name=methods_name,
     train_error_mx=train_error_mx,

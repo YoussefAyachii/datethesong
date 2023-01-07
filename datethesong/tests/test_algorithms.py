@@ -5,7 +5,8 @@
 import unittest
 import numpy as np
 
-from algorithms import normalize_dictionary, mp, omp, ridge_regression
+from datethesong.algorithms.algorithms import(
+    normalize_dictionary, mp, omp, ridge_regression)
 
 
 class TestNormalizeDictionary(unittest.TestCase):

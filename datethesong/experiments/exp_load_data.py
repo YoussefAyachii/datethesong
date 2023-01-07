@@ -3,11 +3,12 @@
 """Exploring data set"""
 
 import numpy as np
-from data_utils import load_data
+
+from datethesong.algorithms.data_utils import load_data
 
 
 X_labeled, y_labeled, X_unlabeled = load_data(
-    "data/YearPredictionMSD_100.npz")
+    "datethesong/data/YearPredictionMSD_100.npz")
 
 # infos on X_labeled, y_labeled and X_unlabeled
 print("\n X_labeled: \n type: {} \n dim: {} \n"
